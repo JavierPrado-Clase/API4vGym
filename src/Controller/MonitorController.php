@@ -8,8 +8,11 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use App\Services\MonitorService;
+use App\Models\MonitorNewDTO;
+use App\Models\MonitorDTO;
 
 final class MonitorController extends AbstractController
 {
@@ -17,7 +20,7 @@ final class MonitorController extends AbstractController
     }
 
     #[Route('/monitors', name: 'get_monitors', methods: ['GET'])]
-    public function getMonitors(): JsonResponse
+    public function getAllMonitors(): JsonResponse
     {
         return $this->json($this->service->getAllMonitors());
     }
@@ -31,17 +34,26 @@ final class MonitorController extends AbstractController
     }
 
     #[Route('/monitors/{id}', name: 'put_monitors', methods: ['PUT'])]
-    public function updateMonitor(#[MapRequestPayload(validationFailedStatusCode: Response::HTTP_NOT_FOUND)] MonitorUpdateDTO $monitorUpdateDto): JsonResponse
+    public function updateMonitor(#[MapRequestPayload(validationFailedStatusCode: Response::HTTP_NOT_FOUND)] MonitorDTO $monitorDto): JsonResponse
     {
-        $monitor = new MonitorDTO($monitorUpdateDto->id, $monitorUpdateDto->name, $monitorUpdateDto->email, $monitorUpdateDto->phoneNumber, $monitorUpdateDto->image);
-        $monitor = $this->service->updateMonitor($monitor);
-        return $this->json($monitor);
+        try {
+            $monitor = new MonitorDTO($monitorDto->id, $monitorDto->name, $monitorDto->email, $monitorDto->phoneNumber, $monitorDto->image);
+            $monitor = $this->service->updateMonitor($monitor);
+            return $this->json($monitor);
+        } catch (NotFoundHttpException $e) {
+            return $this->json(["error" => $e], 400);
+        }
+        
     }
 
     #[Route('/monitors/{id}', name: 'delete_monitors', methods: ['DELETE'])]
     public function deleteMonitor(int $id): JsonResponse
     {
-        $this->service->deleteMonitor($id);
+        try {
+            $this->service->deleteMonitor($id);
         return $this->json(['message' => 'Monitor deleted successfully']);
+        } catch (NotFoundHttpException $e) {
+            return $this->json(["error" => $e], 400);
+        }
     }
 }
