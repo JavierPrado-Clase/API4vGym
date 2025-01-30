@@ -8,8 +8,18 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MonitorRepository::class)]
-class Monitor
+class Monitor implements \JsonSerializable
 {
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'email' => $this->getEmail(),
+            'phonenumber' => $this->getPhonenumber(),
+            'image' => $this->getImage(),
+        ];
+    }
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

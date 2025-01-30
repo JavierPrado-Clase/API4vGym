@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use Doctrine\ORM\EntityManagerInterface;
-use App\DTO\ActivityTypeDTO;
+use App\Models\ActivityTypeDTO;
 
 class ActivityTypeService
 {

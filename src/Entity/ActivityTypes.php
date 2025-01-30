@@ -9,8 +9,16 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ActivityTypesRepository::class)]
-class ActivityTypes
+class ActivityTypes implements \JsonSerializable
 {
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'required_monitors' => $this->getRequiredMonitors()
+        ];
+    }
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -41,18 +49,6 @@ class ActivityTypes
     public function setId(int $Id): static
     {
         $this->Id = $Id;
-
-        return $this;
-    }
-
-    public function getNombre(): ?string
-    {
-        return $this->nombre;
-    }
-
-    public function setNombre(string $nombre): static
-    {
-        $this->nombre = $nombre;
 
         return $this;
     }

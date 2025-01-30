@@ -19,7 +19,7 @@ final class ActivityController extends AbstractController
     public function __construct(private ActivityService $service){
     }
     #[Route('/activities', name: 'get_activities', methods: ['GET'])]
-    public function getAllActivities(#[MapQueryParameter] DateTime $date = null): JsonResponse
+    public function getAllActivities(#[RequestParam(type: DateTime::class)] ?DateTime $date = null): JsonResponse
     {
         return $this->json($this->service->getAllActivities($date));
     }

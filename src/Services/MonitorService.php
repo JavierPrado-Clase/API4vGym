@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use Doctrine\ORM\EntityManagerInterface;
-use App\DTO\MonitorDTO;
+use App\Models\MonitorDTO;
 use App\Entity\Monitor;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -35,7 +35,7 @@ class MonitorService
         return $newMonitor;
     }
 
-    public function updateMonitor(MonitorDTO $updateMonitor): MonitorDTO
+    public function updateMonitor(MonitorDTO $updateMonitor): Monitor
     {
         $monitor = $this->entityManager->getRepository(Monitor::class)->find($updateMonitor->getId());
         if (!$monitor) {
