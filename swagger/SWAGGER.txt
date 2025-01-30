@@ -1,0 +1,260 @@
+openapi: 3.0.3
+info:
+  title: Gym 4V
+  description: |-
+    API para mantener una BBDD de un Gym cercano al Instituto 4V
+  contact:
+    email: javierprado2005@gmail.com
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+tags:
+  - name: Activities
+    description: Everything about activities
+  - name: Activity-types
+    description: Everything about the types of activities
+  - name: Monitors
+    description: Everything about monitors
+paths:
+  /activities:
+    get:
+      tags:
+        - Activities
+      summary: Get all activities
+      parameters:
+        - name: date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: List of activities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ActivityDTO'
+    post:
+      tags:
+        - Activities
+      summary: Create a new activity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivityNewDTO'
+      responses:
+        '200':
+          description: Activity created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityDTO'
+        '400':
+          description: Invalid input
+
+  /activities/{id}:
+    put:
+      tags:
+        - Activities
+      summary: Update an activity
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivityDTO'
+      responses:
+        '200':
+          description: Activity updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityDTO'
+        '400':
+          description: Activity not found
+    delete:
+      tags:
+        - Activities
+      summary: Delete an activity
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Activity deleted
+
+  /monitors:
+    get:
+      tags:
+        - Monitors
+      summary: Get all monitors
+      responses:
+        '200':
+          description: List of monitors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MonitorDTO'
+    post:
+      tags:
+        - Monitors
+      summary: Create a new monitor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MonitorNewDTO'
+      responses:
+        '200':
+          description: Monitor created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitorDTO'
+        '400':
+          description: Invalid input
+
+  /monitors/{id}:
+    put:
+      tags:
+        - Monitors
+      summary: Update a monitor
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MonitorDTO'
+      responses:
+        '200':
+          description: Monitor updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitorDTO'
+        '400':
+          description: Monitor not found
+    delete:
+      tags:
+        - Monitors
+      summary: Delete a monitor
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Monitor deleted
+
+components:
+  schemas:
+    ActivityDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        activityType:
+          $ref: '#/components/schemas/ActivityTypeDTO'
+        dateStart:
+          type: string
+          format: date-time
+        dateEnd:
+          type: string
+          format: date-time
+        monitors:
+          type: array
+          items:
+            $ref: '#/components/schemas/MonitorDTO'
+    
+    ActivityNewDTO:
+      type: object
+      required:
+        - id
+        - activityType
+        - dateStart
+        - dateEnd
+        - monitors
+      properties:
+        id:
+          type: integer
+        activityType:
+          $ref: '#/components/schemas/ActivityTypeDTO'
+        dateStart:
+          type: string
+          format: date-time
+        dateEnd:
+          type: string
+          format: date-time
+        monitors:
+          type: array
+          items:
+            $ref: '#/components/schemas/MonitorDTO'
+    
+    ActivityTypeDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        requiredMonitors:
+          type: integer
+    
+    MonitorDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        phoneNumber:
+          type: integer
+        image:
+          type: string
+    
+    MonitorNewDTO:
+      type: object
+      required:
+        - id
+        - name
+        - email
+        - phoneNumber
+        - image
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        phoneNumber:
+          type: integer
+        image:
+          type: string
